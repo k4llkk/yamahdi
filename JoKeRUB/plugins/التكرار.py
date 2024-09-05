@@ -312,8 +312,7 @@ async def aljoker_allnshr(client, sleeptimet, message):
     aljoker_chats = await client.get_dialogs()
     while yaAli:
         for chat in aljoker_chats:
-            if chat.is_group and chat.title != "فريق الجوكر •Team ALjoker":
-                try:
+            if chat.is_group and chat.title != "مشتركين الجوكر • Team ALjoker"
                     if message.media:
                         caption_with_counter = f"{message.text}"
                         await client.send_file(chat.id, message.media, caption=caption_with_counter)
