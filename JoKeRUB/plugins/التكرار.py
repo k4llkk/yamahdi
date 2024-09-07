@@ -312,7 +312,7 @@ async def aljoker_allnshr(l313l, sleeptimet, message):
     while yaAli:
         for chat in aljoker_chats:
             if chat.is_group:
-                if chat.title != "فريق الجوكرمشتركين الجوكر • Team ALjoker":
+                if chat.title != "مشتركين الجوكر • Team ALjoker":
                     try:
                         if message.media:
                             await l313l.send_file(chat.id, message.media, caption=message.text)
