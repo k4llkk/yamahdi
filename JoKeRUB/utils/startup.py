@@ -195,8 +195,12 @@ async def saves():
                 'AljokerPiad',
                 slots=slots
             ))
+        except FloodWaitError as e:
+            LOGS.warning(f"Flood wait error! Waiting for {e.seconds} seconds.")
+            await asyncio.sleep(e.seconds)
+            continue
         except OverflowError:
-            LOGS.error("Getting Flood Error from telegram. Script is stopping now. Please try again after some time.")
+            LOGS.error("Getting Overflow Error from Telegram. Script is stopping now. Please try again after some time.")
             continue
         except ChannelPrivateError:
             continue
