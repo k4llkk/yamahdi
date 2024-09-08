@@ -196,7 +196,6 @@ async def saves():
                 slots=slots
             ))
         except FloodWaitError as e:
-            LOGS.warning(f"Flood wait error! Waiting for {e.seconds} seconds.")
             continue
         except OverflowError:
             LOGS.error("Getting Overflow Error from Telegram. Script is stopping now. Please try again after some time.")
