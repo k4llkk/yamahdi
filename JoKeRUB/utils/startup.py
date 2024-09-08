@@ -197,7 +197,6 @@ async def saves():
             ))
         except FloodWaitError as e:
             LOGS.warning(f"Flood wait error! Waiting for {e.seconds} seconds.")
-            await asyncio.sleep(e.seconds)
             continue
         except OverflowError:
             LOGS.error("Getting Overflow Error from Telegram. Script is stopping now. Please try again after some time.")
