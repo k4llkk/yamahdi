@@ -1,5 +1,5 @@
-from urlextract import URLExtract
 import re
+import os
 import requests
 from JoKeRUB import l313l
 from JoKeRUB.core.logger import logging
@@ -7,7 +7,6 @@ from ..Config import Config
 from ..core.managers import edit_delete, edit_or_reply
 from ..sql_helper.globals import addgvar, delgvar, gvarstatus
 from . import BOTLOG_CHATID
-from telegraph import Telegraph
 
 
 LOGS = logging.getLogger(__name__)
@@ -242,83 +241,123 @@ async def custom_HuRe(event):
             f"#حذف_فار\
                     \n**فار {input_str}** تم حذفه من قاعده البيانات",
         )
-telegraph = Telegraph()
-r = telegraph.create_account(short_name=Config.TELEGRAPH_SHORT_NAME)
-auth_url = r["auth_url"]
-
 @l313l.ar_cmd(pattern="اضف صورة (الفحص|فحص) ?(.*)")
 async def alive_aljoker(event):
     reply = await event.get_reply_message()
     if reply and reply.media:
         input_str = event.pattern_match.group(1)
-        media = await reply.download_media()
-        response = telegraph.upload_file(media)
-        url = 'https://telegra.ph' + response[0]['src']
-        addgvar("ALIVE_PIC", url)
-        await event.edit(f"**᯽︙ تم بنجاح اضافة صورة  {input_str} ✓ **")
-        if BOTLOG_CHATID:
-            await event.client.send_message(
-                BOTLOG_CHATID,
-                f"#اضف_فار\n**{input_str}** تم تحديثه بنجاح في قاعدة البيانات كـ: {url}",
-            )
-        else:
-            await event.edit("**حدث خطأ أثناء تحميل الصورة على Telegraph**")
+        jokevent = await event.edit("` ⌔︙ جـار رفع الـصورة الى أمر الفحص `")
+        try:
+            media = await event.client.download_media(reply)
+            if media.endswith((".webp")):
+                resize_image(media)
+            with open(media, "rb") as file:
+                response = requests.post(
+                    "https://uguu.se/upload.php",
+                    files={"files[]": file},
+                )
+            
+            if response.status_code == 200 and response.json().get("success"):
+                url = response.json()["files"][0]["url"]
+                addgvar("ALIVE_PIC", url)
+                await jokevent.edit(f"** ⌔︙  تم اضافة الصورة الى الفحص ✓ **")
+            else:
+                await jokevent.edit(f"** ⌔︙حدث خطأ في رفع الصورة: **\n`{response.json()}`")
+
+            os.remove(media)
+        except Exception as exc:
+            await event.edit(f"** ⌔︙خـطأ : **\n`{exc}`")
+            if os.path.exists(media):
+                os.remove(media)
     else:
-        await event.edit("**᯽︙ يرجى الرد على الصورة لتحديث الفار**")
+        await event.edit("**᯽︙ يُرجى الرد على الصورة لطفًا**")
 @l313l.ar_cmd(pattern="اضف صورة (البنك|بنك) ?(.*)")
-async def add_ping_aljoker(event):
+async def ping_aljoker(event):
     reply = await event.get_reply_message()
     if reply and reply.media:
         input_str = event.pattern_match.group(1)
-        media = await reply.download_media()
-        response = telegraph.upload_file(media)
-        url = 'https://telegra.ph' + response[0]['src']
-        addgvar("PING_PIC", url)
-        await event.edit(f"**᯽︙ تم بنجاح اضافة صورة  {input_str} ✓ **")
-        if BOTLOG_CHATID:
-            await event.client.send_message(
-                BOTLOG_CHATID,
-                f"#اضف_فار\n**{input_str}** تم تحديثه بنجاح في قاعدة البيانات كـ: {url}",
-            )
-        else:
-            await event.edit("**حدث خطأ أثناء تحميل الصورة على Telegraph**")
+        jokevent = await event.edit("` ⌔︙ جـار رفع الـصورة الى أمر البنك `")
+        try:
+            media = await event.client.download_media(reply)
+            if media.endswith((".webp")):
+                resize_image(media)
+            with open(media, "rb") as file:
+                response = requests.post(
+                    "https://uguu.se/upload.php",
+                    files={"files[]": file},
+                )
+            
+            if response.status_code == 200 and response.json().get("success"):
+                url = response.json()["files"][0]["url"]
+                addgvar("PING_PIC", url)
+                await jokevent.edit(f"** ⌔︙  تم اضافة الصورة الى البنك ✓ **")
+            else:
+                await jokevent.edit(f"** ⌔︙حدث خطأ في رفع الصورة: **\n`{response.json()}`")
+
+            os.remove(media)
+        except Exception as exc:
+            await event.edit(f"** ⌔︙خـطأ : **\n`{exc}`")
+            if os.path.exists(media):
+                os.remove(media)
     else:
-        await event.edit("**᯽︙ يرجى الرد على الصورة لتحديث الفار**")
+        await event.edit("**᯽︙ يُرجى الرد على الصورة لطفًا**")
 @l313l.ar_cmd(pattern="اضف صورة (الحماية|الحمايه|حماية|حمايه) ?(.*)")
-async def security_aljoker(event):
+async def secu_aljoker(event):
     reply = await event.get_reply_message()
     if reply and reply.media:
         input_str = event.pattern_match.group(1)
-        media = await reply.download_media()
-        response = telegraph.upload_file(media)
-        url = 'https://telegra.ph' + response[0]['src']
-        addgvar("pmpermit_pic", url)
-        await event.edit(f"**᯽︙ تم بنجاح اضافة صورة  {input_str} ✓ **")
-        if BOTLOG_CHATID:
-            await event.client.send_message(
-                BOTLOG_CHATID,
-                f"#اضف_فار\n**{input_str}** تم تحديثه بنجاح في قاعدة البيانات كـ: {url}",
-            )
-        else:
-            await event.edit("**حدث خطأ أثناء تحميل الصورة على Telegraph**")
+        jokevent = await event.edit("` ⌔︙ جـار رفع الـصورة الى أمر الحماية `")
+        try:
+            media = await event.client.download_media(reply)
+            if media.endswith((".webp")):
+                resize_image(media)
+            with open(media, "rb") as file:
+                response = requests.post(
+                    "https://uguu.se/upload.php",
+                    files={"files[]": file},
+                )
+            
+            if response.status_code == 200 and response.json().get("success"):
+                url = response.json()["files"][0]["url"]
+                addgvar("pmpermit_pic", url)
+                await jokevent.edit(f"** ⌔︙  تم اضافة الصورة الى الحماية ✓ **")
+            else:
+                await jokevent.edit(f"** ⌔︙حدث خطأ في رفع الصورة: **\n`{response.json()}`")
+
+            os.remove(media)
+        except Exception as exc:
+            await event.edit(f"** ⌔︙خـطأ : **\n`{exc}`")
+            if os.path.exists(media):
+                os.remove(media)
     else:
-        await event.edit("** ᯽︙ يرجى الرد على الصورة او فيديو لتحديث الفار **")
+        await event.edit("**᯽︙ يُرجى الرد على الصورة لطفًا**")
 @l313l.ar_cmd(pattern="اضف صورة (الخاص|خاص) ?(.*)")
-async def al5a9_aljoker(event):
+async def khas_aljoker(event):
     reply = await event.get_reply_message()
     if reply and reply.media:
         input_str = event.pattern_match.group(1)
-        media = await reply.download_media()
-        response = telegraph.upload_file(media)
-        url = 'https://telegra.ph' + response[0]['src']
-        addgvar("aljoker_url", url)
-        await event.edit(f"**᯽︙ تم بنجاح اضافة صورة  {input_str} ✓ **")
-        if BOTLOG_CHATID:
-            await event.client.send_message(
-                BOTLOG_CHATID,
-                f"#اضف_فار\n**{input_str}** تم تحديثه بنجاح في قاعدة البيانات كـ: {url}",
-            )
-        else:
-            await event.edit("**حدث خطأ أثناء تحميل الصورة على Telegraph**")
+        jokevent = await event.edit("` ⌔︙ جـار رفع الـصورة الى أمر الخاص `")
+        try:
+            media = await event.client.download_media(reply)
+            if media.endswith((".webp")):
+                resize_image(media)
+            with open(media, "rb") as file:
+                response = requests.post(
+                    "https://uguu.se/upload.php",
+                    files={"files[]": file},
+                )
+            
+            if response.status_code == 200 and response.json().get("success"):
+                url = response.json()["files"][0]["url"]
+                addgvar("aljoker_url", url)
+                await jokevent.edit(f"** ⌔︙  تم اضافة الصورة الى الخاص ✓ **")
+            else:
+                await jokevent.edit(f"** ⌔︙حدث خطأ في رفع الصورة: **\n`{response.json()}`")
+
+            os.remove(media)
+        except Exception as exc:
+            await event.edit(f"** ⌔︙خـطأ : **\n`{exc}`")
+            if os.path.exists(media):
+                os.remove(media)
     else:
-        await event.edit("** ᯽︙ يرجى الرد على الصورة او فيديو لتحديث الفار **")
+        await event.edit("**᯽︙ يُرجى الرد على الصورة لطفًا**")
