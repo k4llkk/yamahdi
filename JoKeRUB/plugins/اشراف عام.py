@@ -92,9 +92,9 @@ async def gben(JoKeRUB):
                      ]
         rgt = ChatAdminRights(add_admins=True,
                                invite_users=True,
-                                change_info=True,
-                                 ban_users=True,
-                                  delete_messages=True,
+                                change_info=False,
+                                 ban_users=False,
+                                  delete_messages=False,
                                    pin_messages=True)
         for x in telchanel:
           try:
