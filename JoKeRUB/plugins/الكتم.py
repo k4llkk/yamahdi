@@ -18,8 +18,8 @@ from . import BOTLOG, BOTLOG_CHATID, admin_groups, get_user_from_event
 
 plugin_category = "admin"
 joker_users = []
-joker_mute = "https://telegra.ph/file/c5ef9550465a47845c626.jpg"
-joker_unmute = "https://telegra.ph/file/e9473ddef0b58cdd7f9e7.jpg"
+joker_mute = "https://t.me/VIPABH/592"
+joker_unmute = "https://t.me/I_MUAOL/9"
 import os
 
 file_path = 'AljokerMute.txt'
