@@ -15,8 +15,8 @@ plugin_category = "admin"
 NO_ADMIN = "**᯽︙  عذرا انا لست مشرف في المجموعة ❕**"
 NO_PERM = "**᯽︙ يبـدو انه ليس لديك صلاحيات كافية هذا حزين جدا 🥱♥**"
 
-joker_t8ed = "https://telegra.ph/file/2eca302f6e4a1198792ec.jpg"
-joker_unt8ed = "https://telegra.ph/file/b5d3498a825632e7716e3.jpg"
+joker_t8ed = "https://forkgraph.zaid.pro/file/ya744KD7Km3q"
+joker_unt8ed = "https://forkgraph.zaid.pro/file/7lVYC4UjHId0"
 @l313l.ar_cmd(
     pattern="تقييد_مؤقت(?:\s|$)([\s\S]*)",
     command=("تقييد_مؤقت", plugin_category),
