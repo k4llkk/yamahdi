@@ -10,7 +10,7 @@ from ..core.managers import edit_delete, edit_or_reply
 from ..helpers.functions import soft_deEmojify
 
 langs = {
-    'عربي': 'ar',
+    'عربي': 'AR',
     'فارسي': 'fa',
     'بلغاري': 'bg',
     'صيني مبسط': 'zh',
@@ -18,7 +18,7 @@ langs = {
     'كرواتي': 'hr',
     'دنماركي': 'da',
     'الماني': 'de',
-    'انجليزي': 'en',
+    'انجليزي': 'EN',
     'فنلندي': 'fil',
     'فرنسي': 'fr',
     'يوناني': 'el',
