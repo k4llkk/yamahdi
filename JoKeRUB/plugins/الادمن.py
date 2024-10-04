@@ -39,7 +39,7 @@ NO_ADMIN = "**᯽︙ أنا لست مشرف هنا!!** "
 NO_PERM = "**᯽︙ ليس لدي أذونات كافية!** "
 CHAT_PP_CHANGED = "**᯽︙ تم تغيير صورة الدردشة بنجاح ✅**"
 INVALID_MEDIA = "**᯽︙ ملحق غير صالح** "
-joker_ban = "https://t.me/VIPABH/1008"
+joker_ban = "https://forkgraph.zaid.pro/file/ya744KD7Km3q"
 BANNED_RIGHTS = ChatBannedRights(
     until_date=None,
     view_messages=True,
@@ -154,7 +154,6 @@ async def promote(event):
         add_admins=True,
         invite_users=True,
         change_info=True,
-        ban_users=False,
         delete_messages=True,
         pin_messages=True,
     )
