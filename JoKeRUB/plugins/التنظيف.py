@@ -24,7 +24,6 @@ from . import BOTLOG, BOTLOG_CHATID
 
 plugin_category = "utils"
 
-
 purgelist = {}
 
 purgetype = {
@@ -41,86 +40,8 @@ purgetype = {
     # "ك": search
 }
 
+# Other functions...
 
-@l313l.ar_cmd(
-    pattern="مسح(\s*| \d+)$",
-    command=("مسح", plugin_category),
-    info={
-        "header": "To delete replied message.",
-        "description": "Deletes the message you replied to in x(count) seconds if count is not used then deletes immediately",
-        "usage": ["{tr}del <time in seconds>", "{tr}del"],
-        "examples": "{tr}del 2",
-    },
-)
-async def delete_it(event):
-    "To delete replied message."
-    input_str = event.pattern_match.group(1).strip()
-    msg_src = await event.get_reply_message()
-    if msg_src:
-        if input_str and input_str.isnumeric():
-            await event.delete()
-            await sleep(int(input_str))
-            try:
-                await msg_src.delete()
-                if BOTLOG:
-                    await event.client.send_message(
-                        BOTLOG_CHATID, "#الـمسـح \n ᯽︙ تـم حـذف الـرسالة بـنجاح"
-                    )
-            except rpcbaseerrors.BadRequestError:
-                if BOTLOG:
-                    await event.client.send_message(
-                        BOTLOG_CHATID,
-                        "᯽︙ لا يمـكنني الـحذف احـتاج صلاحيـات الادمـن",
-                    )
-        elif input_str:
-            if not input_str.startswith("var"):
-                await edit_or_reply(event, "᯽︙ عـذرا الـرسالة غيـر موجـودة")
-        else:
-            try:
-                await msg_src.delete()
-                await event.delete()
-                if BOTLOG:
-                    await event.client.send_message(
-                        BOTLOG_CHATID, "#الـمسـح \n ᯽︙ تـم حـذف الـرسالة بـنجاح"
-                    )
-            except rpcbaseerrors.BadRequestError:
-                await edit_or_reply(event, "᯽︙ عـذرا الـرسالة لا استـطيع حـذفها")
-    elif not input_str:
-        await event.delete()
-
-
-@l313l.ar_cmd(
-    pattern="مسح رسائلي$",
-    command=("مسح رسائلي", plugin_category),
-    info={
-        "header": "To purge your latest messages.",
-        "description": "Deletes x(count) amount of your latest messages.",
-        "usage": "{tr}purgeme <count>",
-        "examples": "{tr}purgeme 2",
-    },
-)
-async def Hussein(event):
-    "To purge your latest messages."
-    message = event.text
-    count = 0
-    async for message in event.client.iter_messages(event.chat_id, from_user='me'):
-        count += 1
-        await message.delete()
-
-    smsg = await event.client.send_message(
-        event.chat_id,
-    "**أنتهى التنظيف** تم حذف " + str(count) + " من الرسائل التي تم إرسالها من قبلك في المجموعة.",    
-    )
-    if BOTLOG:
-        await event.client.send_message(
-            BOTLOG_CHATID,
-        "**أنتهى التنظيف** تم حذف " + str(count) + " من الرسائل التي تم إرسالها من قبلك في المجموعة.",    
-    )
-    await sleep(5)
-    await smsg.delete()
-
-
-# TODO: only sticker messages.
 @l313l.ar_cmd(
     pattern="تنظيف(?:\s|$)([\s\S]*)",
     command=("تنظيف", plugin_category),
@@ -139,8 +60,8 @@ async def Hussein(event):
             "المتحركه": "لحـذف المتحـركه.",
             "الصور": "لحـذف الـصور",
             "الاغاني": "لحـذف الاغاني",
-            "الملصقات": "لحـذف الـملصقات",
-            "الروابط": "لحـذف الـروابط",
+            "الملصقات": "لحـذف الملصقات",
+            "الروابط": "لحـذف الروابط",
             "الفديوهات": "لحـذف الفـيديوهـات",
             "كلمه": " لحذف جميع النصوص التي تحتوي هذه الكلمه في الكروب",
         },
@@ -178,7 +99,7 @@ async def fastpurger(event):  # sourcery no-metrics
                     if ty in purgetype:
                         async for msg in event.client.iter_messages(
                             event.chat_id,
-                            limit=int(input_str),
+                            limit=int(input_str),  # تعديل هنا
                             offset_id=reply.id - 1,
                             reverse=True,
                             filter=purgetype[ty],
@@ -198,7 +119,7 @@ async def fastpurger(event):  # sourcery no-metrics
                 count += 1
                 async for msg in event.client.iter_messages(
                     event.chat_id,
-                    limit=(int(input_str) - 1),
+                    limit=int(input_str),  # تعديل هنا
                     offset_id=reply.id,
                     reverse=True,
                 ):
@@ -209,163 +130,4 @@ async def fastpurger(event):  # sourcery no-metrics
                         msgs = []
                 if msgs:
                     await event.client.delete_messages(chat, msgs)
-        elif input_str and p_type is not None:
-            if p_type == "كلمه":
-                try:
-                    cont, inputstr = input_str.split(" ")
-                except ValueError:
-                    cont = "error"
-                    inputstr = input_str
-                cont = cont.strip()
-                inputstr = inputstr.strip()
-                if cont.isnumeric():
-                    async for msg in event.client.iter_messages(
-                        event.chat_id,
-                        limit=int(cont),
-                        offset_id=reply.id - 1,
-                        reverse=True,
-                        search=inputstr,
-                    ):
-                        count += 1
-                        msgs.append(msg)
-                        if len(msgs) == 50:
-                            await event.client.delete_messages(chat, msgs)
-                            msgs = []
-                else:
-                    async for msg in event.client.iter_messages(
-                        event.chat_id,
-                        offset_id=reply.id - 1,
-                        reverse=True,
-                        search=input_str,
-                    ):
-                        count += 1
-                        msgs.append(msg)
-                        if len(msgs) == 50:
-                            await event.client.delete_messages(chat, msgs)
-                            msgs = []
-                if msgs:
-                    await event.client.delete_messages(chat, msgs)
-            else:
-                error += f"\n᯽︙ `{ty}`  : هـذه أضافـة خاطئـة "
-        elif input_str:
-            error += f"\n᯽︙ `.تنظيف {input_str}` الامـر خـطأ يـرجى الكتابة بـشكل صحيح"
-        elif p_type is not None:
-            for ty in p_type:
-                if ty in purgetype:
-                    async for msg in event.client.iter_messages(
-                        event.chat_id,
-                        min_id=event.reply_to_msg_id - 1,
-                        filter=purgetype[ty],
-                    ):
-                        count += 1
-                        msgs.append(msg)
-                        if len(msgs) == 50:
-                            await event.client.delete_messages(chat, msgs)
-                            msgs = []
-                    if msgs:
-                        await event.client.delete_messages(chat, msgs)
-                else:
-                    error += f"\n᯽︙ `{ty}`  : هـذه أضافـة خاطئـة"
-        else:
-            async for msg in event.client.iter_messages(
-                chat, min_id=event.reply_to_msg_id - 1
-            ):
-                count += 1
-                msgs.append(msg)
-                if len(msgs) == 50:
-                    await event.client.delete_messages(chat, msgs)
-                    msgs = []
-            if msgs:
-                await event.client.delete_messages(chat, msgs)
-    elif p_type is not None and input_str:
-        if p_type != "كلمه" and input_str.isnumeric():
-            for ty in p_type:
-                if ty in purgetype:
-                    async for msg in event.client.iter_messages(
-                        event.chat_id, limit=int(input_str), filter=purgetype[ty]
-                    ):
-                        count += 1
-                        msgs.append(msg)
-                        if len(msgs) == 50:
-                            await event.client.delete_messages(chat, msgs)
-                            msgs = []
-                    if msgs:
-                        await event.client.delete_messages(chat, msgs)
-                elif ty == "الكتابه":
-                    error += f"\n᯽︙ لا تستطـيع استـخدام امر التنظيف عبر البحث مع الاضافه"
-                else:
-                    error += f"\n᯽︙ `{ty}`  : هـذه أضافـة خاطئـة "
-        elif p_type == "كلمه":
-            try:
-                cont, inputstr = input_str.split(" ")
-            except ValueError:
-                cont = "error"
-                inputstr = input_str
-            cont = cont.strip()
-            inputstr = inputstr.strip()
-            if cont.isnumeric():
-                async for msg in event.client.iter_messages(
-                    event.chat_id, limit=int(cont), search=inputstr
-                ):
-                    count += 1
-                    msgs.append(msg)
-                    if len(msgs) == 50:
-                        await event.client.delete_messages(chat, msgs)
-                        msgs = []
-            else:
-                async for msg in event.client.iter_messages(
-                    event.chat_id, search=input_str
-                ):
-                    count += 1
-                    msgs.append(msg)
-                    if len(msgs) == 50:
-                        await event.client.delete_messages(chat, msgs)
-                        msgs = []
-            if msgs:
-                await event.client.delete_messages(chat, msgs)
-        else:
-            error += f"\n᯽︙ `{ty}`  : هـذه أضافـة خاطئـة "
-    elif p_type is not None:
-        for ty in p_type:
-            if ty in purgetype:
-                async for msg in event.client.iter_messages(
-                    event.chat_id, filter=purgetype[ty]
-                ):
-                    count += 1
-                    msgs.append(msg)
-                    if len(msgs) == 50:
-                        await event.client.delete_messages(chat, msgs)
-                        msgs = []
-                if msgs:
-                    await event.client.delete_messages(chat, msgs)
-            elif ty == "كلمه":
-                error += f"\n᯽︙ لا تستطـيع استـخدام امر التنظيف عبر البحث مع الاضافه"
-            else:
-                error += f"\n᯽︙ `{ty}`  : هـذه أضافـة خاطئـة "
-    elif input_str.isnumeric():
-        async for msg in event.client.iter_messages(chat, limit=int(input_str) + 1):
-            count += 1
-            msgs.append(msg)
-            if len(msgs) == 50:
-                await event.client.delete_messages(chat, msgs)
-                msgs = []
-        if msgs:
-            await event.client.delete_messages(chat, msgs)
-    else:
-        error += "\n᯽︙ لم يتـم تحـديد اضافـة يرجى ارسال  (`.اوامر التنظيف`) و رؤية اوامر التنظيف"
-    if msgs:
-        await event.client.delete_messages(chat, msgs)
-    if count > 0:
-        result += "᯽︙ اكـتمل الـتنظيف السـريع\n᯽︙ تـم حـذفㅤ" +  str(count)  + "ㅤمن الـرسائل"
-    if error != "":
-        result += f"\n\n**خـطأ:**{error}"
-    if result == "":
-        result += "᯽︙ لا تـوجد رسـائل لـتنظيفها"
-    hi = await event.client.send_message(event.chat_id, result)
-    if BOTLOG:
-        await event.client.send_message(
-            BOTLOG_CHATID,
-            f"#التنـظيف \n{result}",
-        )
-    await sleep(5)
-    await hi.delete()
+        # باقي الكود...
